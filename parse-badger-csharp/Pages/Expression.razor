@@ -1,0 +1,29 @@
+@page "/expression"
+
+<h1>Expression</h1>
+
+<EditForm Model="@expressionModel" OnInvalidSubmit="@HandleInvalidSubmit" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="expression" @bind-Value="expressionModel.Expression" />
+    <button type="Submit">Submit</button>
+</EditForm>
+
+<p>@result</p>
+
+@code {
+    private ExpressionModel expressionModel = new ExpressionModel();
+
+    private string result = "";
+
+    private void HandleInvalidSubmit()
+    {
+        result = "";
+    }
+
+    private void HandleValidSubmit()
+    {
+        result = $"Result: {expressionModel.Expression}";
+    }
+}
