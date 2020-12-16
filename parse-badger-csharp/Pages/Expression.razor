@@ -24,6 +24,14 @@
 
     private void HandleValidSubmit()
     {
-        result = $"Result: {expressionModel.Expression}";
+        var expression = new NCalc.Expression(expressionModel.Expression);
+        try
+        {
+            result = $"Result: {expression.Evaluate()}";
+        }
+        catch (Exception e)
+        {
+            result = $"Error: {e.Message}";
+        }
     }
 }
