@@ -6,7 +6,27 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <InputText id="expression" @bind-Value="expressionModel.Expression" />
+    <div class="form-section">
+        <InputText id="expression" @bind-Value="expressionModel.Expression" />
+    </div>
+
+    <h5>Parameters</h5>
+
+    <div class="form-section">
+        <button @onclick="HandleAddParameter">Add Parameter</button>
+    </div>
+
+    @foreach (var item in expressionModel.Parameters)
+    {
+        <div class="form-section">
+            <label asp-for="name">Parameter name</label>
+            <InputText id="name" @bind-Value="item.Name" />
+            <label asp-for="value">Parameter value</label>
+            <InputText id="value" @bind-Value="item.Value" />
+            <button @onclick="@(e => HandleDeleteParameter(item))">Delete</button>
+        </div>
+    }
+
     <button type="Submit">Submit</button>
 </EditForm>
 
@@ -17,6 +37,16 @@
 
     private string result = "";
 
+    private void HandleAddParameter()
+    {
+        expressionModel.Parameters.Add(new ExpressionParameterModel());
+    }
+
+    private void HandleDeleteParameter(ExpressionParameterModel item)
+    {
+        expressionModel.Parameters.Remove(item);
+    }
+
     private void HandleInvalidSubmit()
     {
         result = "";
@@ -24,9 +54,14 @@
 
     private void HandleValidSubmit()
     {
-        var expression = new NCalc.Expression(expressionModel.Expression);
         try
         {
+            var expression = new NCalc.Expression(expressionModel.Expression);
+            foreach (var item in expressionModel.Parameters)
+            {
+                expression.Parameters[item.Name] = new NCalc.Expression(item.Value);
+            }
+
             result = $"Result: {expression.Evaluate()}";
         }
         catch (Exception e)
